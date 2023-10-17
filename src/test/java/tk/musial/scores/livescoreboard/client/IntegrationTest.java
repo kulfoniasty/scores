@@ -1,41 +1,36 @@
 package tk.musial.scores.livescoreboard.client;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.Clock;
+import java.time.ZoneOffset;
 
 import org.junit.jupiter.api.Test;
 
 import tk.musial.scores.livescoreboard.InMemoryScoreBoard;
-import tk.musial.scores.livescoreboard.Match;
 import tk.musial.scores.livescoreboard.Score;
-import tk.musial.scores.livescoreboard.ScoreBoard;
 import tk.musial.scores.livescoreboard.Team;
 
 public class IntegrationTest {
 
     @Test
     void playWorldCup() {
-        var board = new InMemoryScoreBoard();
+        var board = new InMemoryScoreBoard(Clock.system(ZoneOffset.UTC));
 
-        var mexCan = new Match(new Team("Mexico"), new Team("Canada"));
-        board.start(mexCan)
-          .updateScore(new Score(0, 5));
+        var mexCan = board.startMatch(new Team("Mexico"), new Team("Canada"));
+        board.updateScore(mexCan, new Score(0, 5));
 
-        var spaBra = new Match(new Team("Spain"), new Team("Brazil"));
-        board.start(spaBra)
-          .updateScore(new Score(10, 2));
+        var spaBra = board.startMatch(new Team("Spain"), new Team("Brazil"));
+        board.updateScore(spaBra, new Score(10, 2));
 
-        var gerFra = new Match(new Team("Germany"), new Team("France"));
-        board.start(gerFra)
-          .updateScore(new Score(2,2));
+        var gerFra = board.startMatch(new Team("Germany"), new Team("France"));
+        board.updateScore(gerFra, new Score(2,2));
 
-        var uruIta = new Match(new Team("Uruguay"), new Team("Italy"));
-        board.start(uruIta)
-          .updateScore(new Score(6,6));
+        var uruIta = board.startMatch(new Team("Uruguay"), new Team("Italy"));
+        board.updateScore(uruIta, new Score(6,6));
 
-        var argAus = new Match(new Team("Argentina"), new Team("Australia"));
-        board.start(argAus)
-          .updateScore(new Score(3,1));
-
+        var argAus = board.startMatch(new Team("Argentina"), new Team("Australia"));
+        board.updateScore(argAus, new Score(3,1));
 
         assertThat(board.getSummary()).containsExactly(
           "Uruguay 6 - Italy 6",
