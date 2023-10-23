@@ -17,8 +17,8 @@ The major pain point of this Score Board-centric approach is violation of Single
 
 On the `rich-domain-solution` branch you can find an alternative approach to the problem.
 
-## What bothered me in the explicit solution:
-- score board was keeping the whole business knowledge
+## What bothered me in the explicit solution
+- Score Board was keeping the whole business knowledge
 - even if I managed to extract some of the business invariants to Match and Score there was still the Score Board being "too fat"
 - what probably bothered me the most was the fact that I could not call "match.updateScore" which I considered to be a state transition of a Match itself and by no means a state of the Score Board
 - another pain point was the fact that I cannot have more boards displaying my world cup results
@@ -35,3 +35,11 @@ On the `rich-domain-solution` branch you can find an alternative approach to the
 - WorldCup is a domain object - keeps the knowledge of teams playing and does not allow the same team to play at the same time
 - ScoreBoard finally is just a display screen. Moreover there can be as many ScoreBoards as we need. There can also be arbitrarily many observers, e.g. News Feeds, Emails, SMS service etc.
 - Match and Score keep their state and handle transitions. In an immutable way of course.
+
+# Open For Change - Closed for Modification
+
+Picture having a new requirement to add cards to matches. So that we can call `math.card(player, color)`
+- In the `rich-domain` the only class that needs changes is `Match`
+
+    - any observers are moreover free to implement the new state update at will. They can also ignore it.
+- In the `explicit` solution we would have to touch a ScoreBoard to expose a new action and then forward this action to a match itself changing the `Match` class.
