@@ -2,6 +2,8 @@
 
 The master branch of this repository is left empty on purpose. It contains only pom.xml, README.MD and Maven Wrapper configuration.
 
+There are two competing solutions to the given assignments. Both described below.
+
 # Explicit solution
 
 On the `explicit-solution` branch you can find a solution which is an explicit implementation of the requirements given in the PDF.
@@ -36,6 +38,12 @@ On the `rich-domain-solution` branch you can find an alternative approach to the
 - ScoreBoard finally is just a display screen. Moreover there can be as many ScoreBoards as we need. There can also be arbitrarily many observers, e.g. News Feeds, Emails, SMS service etc.
 - Match and Score keep their state and handle transitions. In an immutable way of course.
 
+## Why so many Maven modules?
+- to physically separate the domain from the implementation
+- `domain` has then knowledge and owns it and externalizes the persistence to the lower levels by exposing interfaces for repositories
+- `inmemory` is just one of the persistence providers. There could by database, redis and any provider you can think of (port-adapter)
+- `client` this module is on purpose using a different package. Apart from the physical separation from the domain thanks to using maven modules it also makes sure that no package-private class leaks from the domain to the client.
+
 # Open For Change - Closed for Modification
 
 Picture having a new requirement to add cards to matches. So that we can call `math.card(player, color)`
@@ -43,3 +51,12 @@ Picture having a new requirement to add cards to matches. So that we can call `m
 
     - any observers are moreover free to implement the new state update at will. They can also ignore it.
 - In the `explicit` solution we would have to touch a ScoreBoard to expose a new action and then forward this action to a match itself changing the `Match` class.
+
+# How to run the project
+
+Project is shipped with Maven Wrapper so building it should be as simple as:
+```
+./mvnw clean install
+```
+
+Both branches `explicit-solution` and `rich-domain-solution` contain an IntegrationTest class which implements the test case from the given assigment in the PDF.
